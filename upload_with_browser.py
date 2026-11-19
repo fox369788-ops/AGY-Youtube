@@ -405,12 +405,55 @@ def run():
                 except Exception:
                     pass
 
-            # 5. 連點「下一步」直到最後一頁
+            # 5. 前往「影片元素」步驟
+            next_btn = page.locator("#next-button, ytcp-button:has-text('下一步')").first
+            if next_btn.is_visible():
+                next_btn.click()
+                time.sleep(2)
+
+            # 檢查是否有同名字幕檔案 (.srt 或 .vtt，採用方式 A 同檔名原則)
+            srt_candidate = vf.with_suffix(".srt")
+            if not srt_candidate.exists():
+                srt_candidate = vf.with_suffix(".vtt")
+
+            if srt_candidate.exists():
+                log(f"✓ 偵測到同名專屬字幕檔: {srt_candidate.name}，正在自動掛載字幕...")
+                try:
+                    add_sub_btn = page.locator("ytcp-video-elements-cell-subtitles ytcp-button#add-button, #subtitles-button, ytcp-button:has-text('新增字幕'), ytcp-button:has-text('新增')").first
+                    if add_sub_btn.is_visible():
+                        add_sub_btn.click()
+                        time.sleep(2)
+
+                        upload_file_btn = page.locator("tp-yt-paper-item:has-text('上傳檔案'), ytcp-button:has-text('上傳檔案'), button:has-text('上傳檔案')").first
+                        if upload_file_btn.is_visible():
+                            upload_file_btn.click()
+                            time.sleep(1)
+
+                            continue_btn = page.locator("ytcp-button:has-text('繼續'), button:has-text('繼續')").first
+                            if continue_btn.is_visible():
+                                continue_btn.click()
+                                time.sleep(1)
+
+                        sub_file_input = page.locator("input[type='file']").last
+                        sub_file_input.set_input_files(str(srt_candidate))
+                        log("✓ 字幕檔已傳送，等待 YouTube 解析時間軸...")
+                        time.sleep(3)
+
+                        done_sub_btn = page.locator("ytcp-button:has-text('完成'), button:has-text('完成'), ytcp-button#save-button").first
+                        if done_sub_btn.is_visible():
+                            done_sub_btn.click()
+                            log("✓ 專屬中文字幕已成功儲存！")
+                            time.sleep(2)
+                except Exception as e:
+                    log(f"⚠️ 自動掛載字幕略過 ({e})，繼續完成影片發布")
+
+            # 繼續點擊「下一步」直到最後的「瀏覽權限」步驟
             for step in range(3):
                 try:
                     next_btn = page.locator("#next-button, ytcp-button:has-text('下一步')").first
-                    next_btn.click()
-                    time.sleep(1.5)
+                    if next_btn.is_visible():
+                        next_btn.click()
+                        time.sleep(1.5)
                 except Exception:
                     break
 
