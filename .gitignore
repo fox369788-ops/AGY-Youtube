@@ -1,0 +1,39 @@
+# 忽略所有影片媒體檔案
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+*.flv
+videos/**/*.mp4
+videos/**/*.mov
+videos/**/*.avi
+videos/**/*.mkv
+videos/**/*.wmv
+
+# 忽略瀏覽器設定檔（包含個人 Google 登入 Cookie 與 Session）
+browser_profile/
+token.json
+client_secret.json
+
+# 忽略執行日誌與個人上傳歷史記錄
+upload_log.txt
+upload_history.json
+run.log
+*.log
+
+# 忽略 Python 快取
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 忽略輸出結果檔案（保留 output 資料夾結構）
+output/*.xlsx
+output/*.md
+output/*.txt
+!output/.gitkeep
+
+# 忽略壓縮打包檔
+*.zip
+*.tar.gz
+*.7z
